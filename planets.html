@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Explore API</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+        type="text/css" />
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"
+        rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="css/styles.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="index.html">Explore API</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="weather.html">Forecast Weather</a></li>
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="planets.html">Planets</a></li>
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="randomImages.html">Random
+                            Images</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Page Header-->
+    <header class="masthead" style="background-image: url('assets/img/post-bg.jpg')">
+        <div class="container position-relative px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="post-heading">
+                        <h1>Planets</h1>
+                        <h2 class="subheading">Four unique, rocky worlds, two complex gas giants and two distant ice
+                            giants.</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Post Content-->
+    <article class="mb-4">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <p>The eight planets, in order from the Sun, are:</p>
+                    <p> - the inner planets: Mercury, Venus, Earth, Mars</p>
+                    <p>- the outer planets: Jupiter, Saturn, Uranus, Neptune</p>
+                </div>
+            </div>
+            <div class="card border-primary mb-3">
+                <div class="card-header">Search Planets</div>
+                <div class="card-body">
+                    <p class="lead">Enter a name planet: </p>
+                    <input type="text" id="planet" class="form-control" placeholder="enter a planet name"><br>
+                    <br>
+                    <button type="submit" class="btn btn-primary" id="searchPlanet">Submit</button>
+                </div>
+            </div>
+        </div>
+    </article>
+    <!-- Modal for planet -->
+    <div class="modal" id="infoDialog" tabindex="-1" role="dialog" aria-labelledby="infoDialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-justify">
+                    <div class="card">
+                        <ul class="list-group">
+                            <li class="list-group-item" id="name"></li>
+                            <li class="list-group-item" id="mass"></li>
+                            <li class="list-group-item" id="radius"></li>
+                            <li class="list-group-item" id="distance_light_year"></li>
+                            <li class="list-group-item" id="temperature"></li>
+                            <li class="list-group-item" id="period"></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <p id="footer-info"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Apply API -->
+    <script>
+        $(document).ready(function () {
+            $("#searchPlanet").click(async function () {
+                console.log("searchPlanet clicked");
+                var planet = $("#planet").val();
+                console.log(planet);
+                if (planet === "" || planet == undefined) {
+                    alert("Oops, you forgot to enter a valid planet name.");
+                } else {
+
+                    const apikey = "XVkOd1wdlZVX8oztFHmWDQ==i6EKYQoyQqpQJ6GO";
+                    const url = `https://api.api-ninjas.com/v1/planets?name=${planet}`;
+                    console.log(url);
+                    const response = await fetch(url, {
+                        method: "GET",
+                        cache: "no-cache",
+                        headers: { 'X-Api-Key': 'XVkOd1wdlZVX8oztFHmWDQ==i6EKYQoyQqpQJ6GO' },
+                        mode: "cors",
+                        credentials: "same-origin"
+                    });
+
+                    if (response.status !== 200) {
+                        alert("You have entered an invalid planet.");
+                        return;
+                    }
+
+                    // convert response to JSON
+                    const responseData = await response.json();
+                    console.log(responseData);
+
+                    // display modal
+                    $("#infoDialog").modal("show");
+
+                    // map response data to HTML elements in modal
+                    $(".modal-title").html(responseData[0].name);
+                    $("#name").html("Name: " + responseData[0].name);
+                    $("#mass").html("Mass: " + responseData[0].mass);
+                    $("#radius").html("Radius: " + responseData[0].radius);
+                    $("#distance_light_year").html("Distance light year: " + responseData[0].distance_light_year);
+                    $("#temperature").html("Temp: " + responseData[0].temperature);
+                    $("#period").html("Period: " + responseData[0].period);
+                 
+                }
+            });
+
+            // retrieve modal
+            var modal = document.getElementById("infoDialog");
+
+            // retrieve span when closing the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            // if the user clicks on the closing icon (x), then clear the modal
+            span.onclick = function () {
+                modal.style.display = "none";
+            };
+
+            // if the user clicks anywhere on the page outside modal boundary, then clear the modal
+            window.onclick = function (event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            };
+        });
+    </script>
+
+    <!-- Footer-->
+    <footer class="border-top">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <ul class="list-inline text-center">
+                        <li class="list-inline-item">
+                            <a href="#!">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fas fa-circle fa-stack-2x"></i>
+                                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#!">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fas fa-circle fa-stack-2x"></i>
+                                    <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#!">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fas fa-circle fa-stack-2x"></i>
+                                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="small text-center text-muted fst-italic">Copyright &copy; Your Website 2023</div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>
+</body>
+
+</html>

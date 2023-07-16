@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Explore API</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet"
+        type="text/css" />
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"
+        rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="css/styles.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+        <div class="container px-4 px-lg-5">
+            <a class="navbar-brand" href="index.html">Explore API</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="weather.html">Forecast Weather</a></li>
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="planets.html">Planets</a></li>
+                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="randomImages.html">Random
+                            Images</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Page Header-->
+    <header class="masthead" style="background-image: url('assets/img/about-bg.jpg')">
+        <div class="container position-relative px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="page-heading">
+                        <h1>Forecast Weather</h1>
+                        <span class="subheading">This is for the US</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Main Content-->
+    <main class="mb-4">
+        <!-- content for my service 1 tab Stock Symbol Lookup -->
+        <div class="card border-primary mb-3">
+            <div class="card-header">Search Forecast Weather (IEX Cloud)</div>
+            <div class="card-body">
+                <p class="lead">Enter a City, State, Country: </p>
+                <input type="text" id="city" class="form-control" placeholder="enter a city name"><br>
+                <input type="text" id="statecode" class="form-control" placeholder="enter a state name"><br>
+                <input type="text" id="country" class="form-control" placeholder="enter a country name">
+                <br>
+                <button type="submit" class="btn btn-primary" id="searchLocation">Get Result</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal for Weather -->
+    <div class="modal" id="infoDialog" tabindex="-1" role="dialog" aria-labelledby="infoDialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-justify">
+                    <div class="card">
+                        <ul class="list-group">
+                            <li class="list-group-item" id="name"></li>
+                            <li class="list-group-item" id="sysCountry"></li>
+                            <li class="list-group-item" id="weatherMain"></li>
+                            <li class="list-group-item" id="weatherDes"></li>
+                            <li class="list-group-item" id="mainTemp"></li>
+                            <li class="list-group-item" id="mainHumidity"></li>
+                            <li class="list-group-item" id="windSpeed"></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <p id="footer-info"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+           
+            $("#searchLocation").click(async function () {
+                console.log("searchStock clicked");
+                var city = $("#city").val();
+                var statecode = $("#statecode").val();
+                var country = $("#country").val();
+                console.log(city);
+                if (city === "" || city == undefined) {
+                    alert("Oops, you forgot to enter a valid city name.");
+                } else {
+                    console.log(city + "," + statecode + "," + country);
+
+                    const apikey = "38e37d580391b8e051fbf00f1c7491b6";
+                    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city},${statecode},${country}&units=imperial&appid=${apikey}`;
+                    console.log(url);
+                    const response = await fetch(url, {
+                        method: "GET",
+                        cache: "no-cache",
+                        mode: "cors",
+                        credentials: "same-origin"
+                    });
+
+                    if (response.status !== 200) {
+                        alert("You have entered an invalid city.");
+                        return;
+                    }
+
+                    // convert response to JSON
+                    const responseData = await response.json();
+                    console.log(responseData);
+
+                    // display modal
+                    $("#infoDialog").modal("show");
+
+                    // map response data to HTML elements in modal
+                    $(".modal-title").html(responseData.name);
+                    $("#name").html("City: " + responseData.name);
+                    $("#sysCountry").html("Country: " + responseData.sys.country);
+                    $("#weatherMain").html("Weather Main: " + responseData.weather[0].main);
+                    $("#weatherDes").html("Weather Description: " + responseData.weather[0].description);
+                    $("#mainTemp").html("Temp: " + responseData.main.temp);
+                    $("#mainHumidity").html("Humidity: " + responseData.main.humidity);
+                    $("#windSpeed").html("Wind Speed: " + responseData.wind.speed);
+
+                }
+            });
+
+
+            $("#getRandomFox").click(async function () {
+
+                const urlAPI = "https://randomfox.ca/floof/?ref=apilist.fun";
+                console.log(urlAPI);
+
+                try {
+                    const response = await fetch(urlAPI, {
+                        method: "GET",
+
+                    });
+                    const responseData = await response.json();
+
+                    // Update the image source
+                    $("#foxImage").attr("src", responseData.image);
+                    console.log(responseData.image);
+                } catch (error) {
+                    console.log("Failed to retrieve the random fox.", error);
+                }
+
+            });
+
+            // retrieve modal
+            var modal = document.getElementById("infoDialog");
+
+            // retrieve span when closing the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            // if the user clicks on the closing icon (x), then clear the modal
+            span.onclick = function () {
+                modal.style.display = "none";
+            };
+
+            // if the user clicks anywhere on the page outside modal boundary, then clear the modal
+            window.onclick = function (event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            };
+        });
+    </script>
+
+    <!-- Footer-->
+    <footer class="border-top">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <ul class="list-inline text-center">
+                        <li class="list-inline-item">
+                            <a href="#!">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fas fa-circle fa-stack-2x"></i>
+                                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#!">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fas fa-circle fa-stack-2x"></i>
+                                    <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="#!">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fas fa-circle fa-stack-2x"></i>
+                                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="small text-center text-muted fst-italic">Copyright &copy; Your Website 2023</div>
+                </div>
+            </div>
+        </div>
+    </footer>
+     <!-- Bootstrap core JavaScript
+    ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>
+</body>
+
+</html>
